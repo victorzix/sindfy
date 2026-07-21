@@ -1,0 +1,15 @@
+# 0005 — Permissão local de git push (Claude Code)
+Data: 2026-07-21
+
+## Feito
+- Criado .claude/settings.local.json com permissão Bash(git push:*) para o Claude Code
+  poder fazer push sem bloqueio do classificador de auto mode.
+- .gitignore: adicionada regra para ignorar .claude/settings.local.json (config pessoal,
+  não versionada).
+
+## Pendente / Planejado
+- O watcher de config do Claude Code só recarrega diretórios que já existiam no início da
+  sessão; como o .claude/ foi criado durante a sessão, a permissão só passa a valer após
+  abrir /hooks uma vez (recarrega config) ou reiniciar o Claude Code.
+- Sem novas pendências de produto (ver 0004 para as pendências abertas do projeto:
+  instância WhatsApp + QR, migração p/ Docker, banco do painel, MVP e Playwright).
