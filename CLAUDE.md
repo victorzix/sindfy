@@ -65,7 +65,7 @@ src/
   services/     Integrações externas: Evolution API, n8n, IA.
   utils/        Funções utilitárias puras e reutilizáveis.
   components/   Componentes de UI reutilizáveis (frontend).
-  pages/        Páginas/rotas do painel (com Next App Router migra para app/).
+  app/          Páginas/rotas do painel (Next App Router).
 docs/
   evolution/    Memória local do projeto (ver seção 6).
 ```

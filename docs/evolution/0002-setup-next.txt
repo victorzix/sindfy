@@ -1,0 +1,33 @@
+# 0002 — Setup do Next e bibliotecas obrigatórias
+Data: 2026-07-21
+
+## Feito
+- Projeto Next.js inicializado (Next 16.2.11, React 19.2.4, App Router, TypeScript,
+  Tailwind v4, ESLint), com alias de import "@/*" -> ./src/*.
+- Estrutura de rotas: src/pages/ (Pages Router) substituída por src/app/ (App Router),
+  para evitar conflito entre os dois modos do Next. CLAUDE.md atualizado (pages -> app).
+- Bibliotecas obrigatórias instaladas:
+  - shadcn/ui (init com defaults; criados src/components/ui/button.tsx e src/lib/utils.ts).
+  - Zustand.
+  - React Hook Form + Zod + @hookform/resolvers.
+  - TanStack Query (React Query).
+  - Drizzle ORM + drizzle-kit (dev).
+- src/settings/env.ts: leitura ÚNICA e validada (Zod) das variáveis de ambiente.
+- src/app/providers.tsx: QueryClientProvider (React Query) conectado no layout.
+- src/app/layout.tsx: metadata pt-BR, lang="pt-BR", Providers no body.
+- src/app/page.tsx: landing mínima usando Button do shadcn (placeholder).
+- Validação: `npm run build` OK (typecheck limpo) e Playwright confirmou render da home
+  em http://localhost:3000 (título correto, Button estilizado, 0 erros no console).
+- .gitignore: adicionado .playwright-mcp/.
+
+## Pendente / Planejado
+- Definir o provedor de banco de dados e instalar o driver do Drizzle correspondente
+  (ex.: postgres/pg, neon, libsql) + configurar drizzle.config.
+- Aprovar scripts de install bloqueados pelo npm se necessário (sharp para otimização
+  de imagem em produção; esbuild/unrs-resolver de ferramentas).
+- Definir tema/base visual do shadcn e primeiros componentes do painel.
+- Implementar funcionalidades do MVP:
+  - A: Gestão de Chamados (triagem via IA + painel Kanban).
+  - B: Acionamento de Fornecedores (banco de prestadores + disparo via WhatsApp).
+- Configurar suíte de testes Playwright (além do smoke manual) quando houver telas reais.
+- Ajustar identidade do git (nome do autor) se desejado.
