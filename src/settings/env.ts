@@ -23,6 +23,7 @@ const envSchema = z.object({
   ),
 
   DATABASE_URL: optionalString,
+  REDIS_URL: optionalString,
 
   EVOLUTION_API_URL: optionalUrl,
   EVOLUTION_API_KEY: optionalString,

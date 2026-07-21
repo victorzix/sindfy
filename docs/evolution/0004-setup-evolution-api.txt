@@ -1,0 +1,35 @@
+# 0004 — Setup do Evolution API (clone local + infra)
+Data: 2026-07-21
+
+## Feito
+- Clone do EvolutionAPI/evolution-api v2.3.7 em ./evolution-api (NÃO versionado — gitignore).
+- Instalação:
+  - npm install na Evolution; aprovados os postinstall bloqueados pela política allow-scripts
+    do npm (prisma, @prisma/engines, esbuild, baileys, sharp, protobufjs, @scarf/scarf)
+    via `npm approve-scripts`.
+- Infra local (a migrar para Docker depois):
+  - Postgres local (postgres:admin@127.0.0.1:5432); banco "evolution-api" criado; schema=public.
+  - Redis: Upstash via TLS (rediss://) — atenção: usar scheme rediss:// (não redis://).
+- Config da Evolution (evolution-api/.env, não versionado):
+  - DATABASE_PROVIDER=postgresql + DATABASE_CONNECTION_URI apontando p/ o Postgres local.
+  - CACHE_REDIS_URI=rediss://... (Upstash).
+  - AUTHENTICATION_API_KEY gerada localmente.
+- Prisma: `npm run db:generate` + `npm run db:deploy:win` (migrations aplicadas no Postgres).
+- Servidor no ar via `npm start` (tsx): HTTP - ON: 8080, PrismaRepository ON, Redis ready.
+  - Validado: GET / -> 200 "it is working!" (v2.3.7); GET /instance/fetchInstances c/ apikey
+    -> 200 [] (auth + Postgres OK). Manager UI em http://localhost:8080/manager.
+- Projeto (versionado):
+  - .env.example: documentadas seções de Banco (PostgreSQL) e Redis (placeholders, sem segredos).
+  - src/settings/env.ts: adicionado REDIS_URL (opcional) ao schema tipado (fonte única de env).
+  - .env (não versionado): DATABASE_URL, REDIS_URL e EVOLUTION_API_KEY reais preenchidos.
+
+## Pendente / Planejado
+- Migrar a infra (Postgres + Redis) para Docker (docker-compose) quando o Docker for instalado;
+  as vars já estão documentadas em .env/.env.example para facilitar a troca.
+- Criar a instância WhatsApp de teste (EVOLUTION_INSTANCE_NAME=sindico) e parear via QR Code.
+- Definir se o painel usa banco próprio ou compartilha o Postgres com a Evolution (hoje o
+  DATABASE_URL do painel aponta para o mesmo banco "evolution-api").
+- Segurança: rotacionar o token do GitHub Packages exposto em ~/.npmrc (ghp_...), pré-existente.
+- Node v26 em uso; Evolution não declara engines — funcionou, mas atenção a libs nativas.
+- Segue valendo: implementar MVP (A: triagem de chamados; B: acionamento de fornecedores)
+  e configurar suíte Playwright quando houver telas reais.
