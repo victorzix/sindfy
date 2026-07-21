@@ -81,6 +81,8 @@ docs/
   comportamento real na tela antes de considerar concluído.
 - **Commits por etapas.** Recomendar os commits divididos por etapa e **commitar somente
   após aprovação do usuário**. Nunca commitar sem "ok".
+- **Autoria dos commits.** O Claude **nunca** é author nem co-author de commit. Todo commit
+  é do usuário — **não** adicionar trailer `Co-Authored-By` nem qualquer atribuição ao Claude.
 - **Usar agentes** (podem ser Sonnet) sempre que acelerar ou qualificar a entrega.
 - Ambiente via `.env` (não versionado). O clone do **`evolution-api/` não é commitado** —
   em algumas máquinas roda local, em outras só conectamos via env.

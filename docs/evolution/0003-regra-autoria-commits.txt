@@ -1,0 +1,10 @@
+# 0003 — Regra de autoria de commits
+Data: 2026-07-21
+
+## Feito
+- CLAUDE.md (seção Fluxo de trabalho): adicionada a regra de que o Claude NUNCA é author
+  nem co-author de commit. Todo commit é do usuário; não usar trailer Co-Authored-By nem
+  qualquer atribuição ao Claude.
+
+## Pendente / Planejado
+- Sem novas pendências nesta etapa (ver 0002 para as pendências abertas do projeto).
