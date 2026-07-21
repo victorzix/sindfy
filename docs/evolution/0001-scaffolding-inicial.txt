@@ -1,0 +1,27 @@
+# 0001 — Scaffolding inicial
+Data: 2026-07-21
+
+## Feito
+- Definição de ambiente:
+  - .gitignore (ignora .env, evolution-api/, node_modules, .next, artefatos Playwright).
+  - .env.example (App, Database, Evolution API, n8n, IA) — Evolution API suporta instância
+    local (clone ./evolution-api) ou remota apenas trocando EVOLUTION_API_URL.
+  - .env (espelho local do example, não versionado).
+- CLAUDE.md com visão, stack, princípios de código (SOLID/Clean Code/segregação/DRY),
+  estrutura de pastas e regras de fluxo de trabalho.
+- Estrutura de pastas segregada em src/ com README de responsabilidade única em cada:
+  models, schemas, core, settings, database, services, utils, components, pages.
+- docs/evolution/ com README (convenção da memória local) e este primeiro registro.
+- Repositório git inicializado.
+
+## Pendente / Planejado
+- Stack definida: Next.js full-stack; ORM Drizzle (provedor de banco a confirmar).
+  Bibliotecas obrigatórias: shadcn/ui, Zustand, React Hook Form + Zod, TanStack Query.
+- Inicializar o projeto Next (package.json, tsconfig) e instalar as libs obrigatórias.
+- Ajustar nomes/valores das variáveis de ambiente conforme necessidade real.
+- Clone do Evolution API em ./evolution-api (não versionado) — feito depois pelo usuário.
+- Decidir src/pages vs src/app (App Router) quando a stack for fechada.
+- Implementar funcionalidades do MVP:
+  - A: Gestão de Chamados (triagem via IA + painel Kanban).
+  - B: Acionamento de Fornecedores (banco de prestadores + disparo via WhatsApp).
+- Configurar Playwright para validação de frontend.
