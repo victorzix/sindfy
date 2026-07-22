@@ -1,0 +1,19 @@
+# 0007 — Infra local via Docker Compose + regra n8n por agente
+Data: 2026-07-21
+
+## Feito
+- docker-compose.yaml com a stack local do projeto:
+  - postgres:16-alpine (container sindfy-postgres) — publicado em 127.0.0.1:55899.
+  - redis:7-alpine (container sindfy-redis).
+  - evoapicloud/evolution-api:v2.3.7 (container sindfy-evolution-api), publicado em :8080.
+  - n8nio/n8n:latest (container sindfy-n8n), em :5678.
+- docker/postgres/init-multiple-databases.sh: cria múltiplos bancos no mesmo Postgres
+  (evolution, n8n, sindfy) — o painel usa o database "sindfy".
+- CLAUDE.md: adicionada a regra "n8n via agente separado" — toda tarefa que opere DIRETAMENTE
+  no n8n (workflows, nós, credenciais, API do n8n) deve ser delegada a um agente separado;
+  infra do serviço n8n no projeto (docker-compose.yaml, .env) é trabalho normal.
+
+## Pendente / Planejado
+- Subir a stack (docker compose up -d) e validar os 4 serviços quando o Docker estiver disponível.
+- Preencher à mão no .env: EVOLUTION_API_KEY e N8N_ENCRYPTION_KEY (ver comentários no .env).
+- Segue o backlog: credenciais Google OAuth (0006), instância WhatsApp + QR, MVP (triagem + fornecedores).

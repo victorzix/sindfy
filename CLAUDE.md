@@ -84,6 +84,9 @@ docs/
 - **Autoria dos commits.** O Claude **nunca** é author nem co-author de commit. Todo commit
   é do usuário — **não** adicionar trailer `Co-Authored-By` nem qualquer atribuição ao Claude.
 - **Usar agentes** (podem ser Sonnet) sempre que acelerar ou qualificar a entrega.
+- **n8n via agente separado.** Toda tarefa que mexa/opere **diretamente no n8n** (workflows,
+  nós, credenciais, chamadas à API do n8n) deve ser delegada a um **agente separado**. Isso não
+  vale para infra do serviço n8n no projeto (ex.: `docker-compose.yaml`, `.env`), que é trabalho normal.
 - Ambiente via `.env` (não versionado). O clone do **`evolution-api/` não é commitado** —
   em algumas máquinas roda local, em outras só conectamos via env.
 
