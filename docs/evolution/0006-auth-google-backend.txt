@@ -1,0 +1,45 @@
+# 0006 — Autenticação (backend): login com Google + sessão
+Data: 2026-07-21
+
+## Feito
+- Banco do painel (database "sindfy" no mesmo Postgres do compose):
+  - Driver postgres.js + Drizzle ORM. Client único em src/database/client.ts (lê env de settings).
+  - drizzle.config.ts (dialect postgresql, schema em src/database/schema/index.ts, out em ./drizzle).
+    Usa dotenv/config para carregar .env na CLI do drizzle-kit.
+  - Scripts npm: db:generate, db:migrate, db:push, db:studio.
+  - Migration inicial (drizzle/0000_*) aplicada. Removido "?schema=public" do DATABASE_URL:
+    o postgres.js rejeita esse parâmetro (public já é o schema padrão).
+- Schema (segregado, 1 tabela por arquivo):
+  - users: id (cuid2), name, email (unique), picture (OPCIONAL/nullable — conta Google pode
+    não ter foto), google_id (unique), created_at, updated_at.
+  - sessions: id (= SHA-256 hex do token), user_id (FK users, ON DELETE CASCADE), expires_at.
+  - Campos opcionais de domínio do usuário serão adicionados depois (conforme combinado).
+- Login com Google (OAuth 2.0 / OIDC) — feito à mão, sem lib de auth "guarda-chuva":
+  - arctic (v3) para o fluxo OAuth com PKCE (state + code_verifier em cookies temporários, 10min).
+  - services/google: oauth-client (cliente arctic sob demanda) + get-google-user-from-code
+    (troca code por tokens, decodifica o id_token e valida as claims via Zod).
+  - Sessão própria: token opaco aleatório (32 bytes) no cookie httpOnly "sindfy_session";
+    no banco guarda-se APENAS o hash SHA-256 do token (nunca o token em claro).
+    Duração 30 dias, renovação automática quando faltam < 15 dias.
+  - core/auth (casos de uso, sem framework): authenticate-with-google (upsert por googleId),
+    create-session, validate-session-token (valida/renova/expira), invalidate-session,
+    session-config (constantes).
+  - Glue do Next (cookies() de next/headers) isolado em src/app/api/auth/_lib/
+    (session-cookie, oauth-state-cookies).
+  - Rotas (App Router): GET /api/auth/google (inicia), GET /api/auth/google/callback
+    (autentica + abre sessão + redirect "/"), GET /api/auth/me (usuário atual),
+    POST /api/auth/logout (encerra sessão + limpa cookie).
+- Config/env: src/settings/env.ts + .env.example + .env com GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET e GOOGLE_REDIRECT_URI (default: ${APP_URL}/api/auth/google/callback).
+- Validação: build/typecheck limpos. Smoke test dos endpoints:
+  /me sem cookie -> 401 {user:null}; /logout -> 200 limpando cookie; /google sem credenciais
+  -> erro claro (não crash). Fluxo real com Google pendente das credenciais do GCP.
+
+## Pendente / Planejado
+- Gerar as credenciais OAuth no Google Cloud Console e preencher GOOGLE_CLIENT_ID/SECRET no .env;
+  cadastrar o redirect URI (http://localhost:55787/api/auth/google/callback). Testar o fluxo real.
+- Frontend do login (botão "Entrar com Google", tela e guarda de rota) — combinado fazer depois.
+  Playwright quando houver tela real.
+- Middleware/guard para proteger rotas do painel usando a sessão (quando houver telas).
+- Campos opcionais do modelo User (a definir conforme o produto).
+- Segue valendo o backlog do 0004: instância WhatsApp + QR, MVP (A: triagem; B: fornecedores).

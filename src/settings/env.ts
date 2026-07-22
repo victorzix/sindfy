@@ -36,6 +36,10 @@ const envSchema = z.object({
   AI_PROVIDER: z.enum(["gemini", "openai"]).default("gemini"),
   GEMINI_API_KEY: optionalString,
   OPENAI_API_KEY: optionalString,
+
+  GOOGLE_CLIENT_ID: optionalString,
+  GOOGLE_CLIENT_SECRET: optionalString,
+  GOOGLE_REDIRECT_URI: optionalUrl,
 });
 
 export const env = envSchema.parse(process.env);
