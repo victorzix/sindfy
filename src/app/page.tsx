@@ -1,17 +1,21 @@
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { getCurrentUser } from "@/app/_lib/auth/get-current-user";
+
+export default async function Home() {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Painel do Síndico
-        </h1>
-        <p className="max-w-md text-muted-foreground">
-          Triagem de chamados e acionamento de fornecedores via WhatsApp.
-        </p>
-      </div>
-      <Button data-testid="cta-comecar">Começar</Button>
+    <main className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
+      <h1 className="text-2xl font-semibold tracking-tight">
+        Olá, {user.name.split(" ")[0]}
+      </h1>
+      <p className="max-w-md text-muted-foreground">
+        Seu painel de chamados e fornecedores aparece aqui.
+      </p>
     </main>
   );
 }
