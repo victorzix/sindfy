@@ -9,6 +9,18 @@ import {
 } from "../../_lib/oauth-state-cookies";
 import { setSessionCookie } from "../../_lib/session-cookie";
 
+/** Resposta de erro: loga a causa real e, em dev, revela a mensagem. */
+function fail(message: string, error?: unknown): Response {
+  if (error !== undefined) {
+    console.error("[auth/google/callback]", message, error);
+  }
+  const detail =
+    env.APP_ENV === "development" && error instanceof Error
+      ? ` — ${error.message}`
+      : "";
+  return new Response(`${message}${detail}`, { status: 400 });
+}
+
 /** Callback do Google: valida o `code`, autentica o usuário e abre a sessão. */
 export async function GET(request: Request): Promise<Response> {
   const params = new URL(request.url).searchParams;
@@ -25,7 +37,7 @@ export async function GET(request: Request): Promise<Response> {
     !stored.codeVerifier ||
     state !== stored.state
   ) {
-    return new Response("Requisição OAuth inválida.", { status: 400 });
+    return fail("Requisição OAuth inválida.");
   }
 
   let userId: string;
@@ -33,12 +45,16 @@ export async function GET(request: Request): Promise<Response> {
     const profile = await getGoogleUserFromCode(code, stored.codeVerifier);
     const user = await authenticateWithGoogle(profile);
     userId = user.id;
-  } catch {
-    return new Response("Falha ao autenticar com o Google.", { status: 400 });
+  } catch (error) {
+    return fail("Falha ao autenticar com o Google.", error);
   }
 
-  const session = await createSession(userId);
-  await setSessionCookie(session.token, session.expiresAt);
+  try {
+    const session = await createSession(userId);
+    await setSessionCookie(session.token, session.expiresAt);
+  } catch (error) {
+    return fail("Falha ao criar a sessão.", error);
+  }
 
   return Response.redirect(new URL("/", env.APP_URL).toString());
 }

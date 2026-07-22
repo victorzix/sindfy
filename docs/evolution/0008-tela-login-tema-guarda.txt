@@ -1,0 +1,31 @@
+# 0008 — Tela de login (Google) + tema branco/azul + guarda da home
+Data: 2026-07-21
+
+## Feito
+- Tema visual "branco + azul claro" nos tokens do shadcn (src/app/globals.css):
+  primary azul, tints suaves em secondary/muted/accent/border, ring azul; dark mode ajustado.
+- Fonte trocada para Inter (src/app/layout.tsx). Corrigido bug do @theme: --font-sans apontava
+  para si mesmo (var(--font-sans)) e a fonte não aplicava (título saía serifado); agora
+  --font-sans: var(--font-inter).
+- Componente Card do shadcn adicionado (src/components/ui/card.tsx).
+- Tela de login (src/app/login/page.tsx): card branco sobre fundo com brilho azul, marca
+  (ícone Building2), título "Painel do Síndico", descrição e botão "Entrar com Google".
+  Responsiva (validada desktop + mobile no Playwright, 0 erros de console).
+  - src/components/icons/google-icon.tsx: logo oficial do Google (multicolor).
+  - src/components/auth/google-sign-in-button.tsx: link (<a>) para /api/auth/google estilizado
+    como botão (navegação de página inteira do fluxo OAuth).
+- Guarda da home: src/app/_lib/auth/get-current-user.ts (lê o cookie de sessão + valida via
+  core/auth). src/app/page.tsx virou Server Component async: sem sessão -> redirect("/login");
+  com sessão -> placeholder saudando o usuário.
+- Callback do Google endurecido (src/app/api/auth/google/callback/route.ts): loga a causa real
+  do erro e, em dev, revela a mensagem na resposta; separa falha de auth x falha de sessão.
+- Login validado FIM A FIM em http://localhost:55787: consentimento Google -> callback 302 ->
+  "/" 200 (autenticado); usuário criado no banco (name/email/picture/google_id) e sessão aberta.
+
+## Pendente / Planejado
+- Textos "Termos de Uso / Política de Privacidade" na tela de login estão sem link (placeholder).
+- Decidir marca: manter só "Painel do Síndico" ou usar "Sindfy" em algum ponto.
+- /login não redireciona quem já está logado para "/" (simetria opcional).
+- Guarda de rota abrangente para o restante do painel (middleware ou layout protegido) quando
+  houver mais telas; logout com redirect amigável (hoje POST /api/auth/logout devolve JSON).
+- Frontend do painel (Kanban de chamados, fornecedores) — MVP.
